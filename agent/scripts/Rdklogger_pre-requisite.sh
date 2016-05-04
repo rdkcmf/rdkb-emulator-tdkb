@@ -1,3 +1,4 @@
+#!/bin/bash
 ##########################################################################
 # If not stated otherwise in this file or this component's Licenses.txt
 # file the following copyright and licenses apply:
@@ -16,21 +17,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-#
 
-echo "Stopping TDK Agent.."
-export TDK_PATH=/usr/ccsp/tdk
+export LOG4C_RCPATH=/nvram/
+export LOG_PATH=/rdklogs/logs/
 
-sleep 1
+cp /etc/log4crc $LOG4C_RCPATH
 
-source $TDK_PATH/Rdklogger_post-requisite.sh
+CONTENT='<rollingpolicy name="TEST_rollingpolicy" type="sizewin" maxsize="2097152" maxnum="2"/>\n<appender name="RI_TESTrollingfileappender" type="rollingfile" logdir="/rdklogs/logs/" prefix="TESTLog.txt" layout="comcast_dated" rollingpolicy="TEST_rollingpolicy"/>\n<category name="RI.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>\n<category name="RI.Stack.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>\n<category name="RI.Stack.LOG.RDK.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>'
 
-#Killing inactive TDK processes
-ps -ef | grep "TDKagentMonitor" | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-sleep 1
-ps -ef | grep "tdk_agent" | grep -v "grep" | grep -v "tr69agent" | awk '{print $2}' | xargs kill -9 >& /dev/null
-ps -ef | grep "tftp" | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-ps -ef | grep $TDK_PATH | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-sleep 2
-
-echo "Done"
+C=$(echo $CONTENT | sed 's/\//\\\//g' | sed 's/\"/\\\"/g')
+sed -i "/<\/log4c>/ s/.*/${C}\n&/" $LOG4C_RCPATH/log4crc

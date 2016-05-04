@@ -1,8 +1,10 @@
+#! /bin/bash
+
 ##########################################################################
 # If not stated otherwise in this file or this component's Licenses.txt
 # file the following copyright and licenses apply:
 #
-# Copyright 2016 RDK Management
+# Copyright 2018 RDK Management
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,19 +20,21 @@
 ##########################################################################
 #
 
-echo "Stopping TDK Agent.."
-export TDK_PATH=/usr/ccsp/tdk
+source /etc/tdk_platform.properties
 
-sleep 1
+echo "UPTIME:" >> /nvram/device_diagnostics.log
+echo "--------" >> /nvram/device_diagnostics.log
+uptime >> /nvram/device_diagnostics.log
 
-source $TDK_PATH/Rdklogger_post-requisite.sh
+echo -e "\nCCSP PROCESSESS RUNNING:" >> /nvram/device_diagnostics.log
+echo "----------------------" >> /nvram/device_diagnostics.log
 
-#Killing inactive TDK processes
-ps -ef | grep "TDKagentMonitor" | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-sleep 1
-ps -ef | grep "tdk_agent" | grep -v "grep" | grep -v "tr69agent" | awk '{print $2}' | xargs kill -9 >& /dev/null
-ps -ef | grep "tftp" | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-ps -ef | grep $TDK_PATH | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-sleep 2
-
-echo "Done"
+for process in $(echo $CCSP_PROCESS | sed "s/,/ /g")
+do
+    OUTPUT=$(top -b -n1 | grep $process | grep -v "grep")
+    if [ $? -eq 0 ]; then
+        echo $OUTPUT >> /nvram/device_diagnostics.log
+    else
+        echo "$process is not running" >> /nvram/device_diagnostics.log
+    fi
+done

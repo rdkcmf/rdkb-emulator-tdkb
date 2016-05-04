@@ -1,3 +1,4 @@
+#!/bin/bash
 ##########################################################################
 # If not stated otherwise in this file or this component's Licenses.txt
 # file the following copyright and licenses apply:
@@ -16,21 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-#
 
-echo "Stopping TDK Agent.."
-export TDK_PATH=/usr/ccsp/tdk
-
-sleep 1
-
-source $TDK_PATH/Rdklogger_post-requisite.sh
-
-#Killing inactive TDK processes
-ps -ef | grep "TDKagentMonitor" | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-sleep 1
-ps -ef | grep "tdk_agent" | grep -v "grep" | grep -v "tr69agent" | awk '{print $2}' | xargs kill -9 >& /dev/null
-ps -ef | grep "tftp" | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-ps -ef | grep $TDK_PATH | grep -v "grep" | awk '{print $2}' | xargs kill -9 >& /dev/null
-sleep 2
-
-echo "Done"
+rm /nvram/log4crc
+rm /rdklogs/logs/TESTLog.txt*
+rm /nvram/debug.ini
