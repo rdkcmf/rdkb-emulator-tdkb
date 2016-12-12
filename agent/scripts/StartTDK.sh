@@ -30,4 +30,4 @@ ulimit -c unlimited
 echo "Going to start Agent"
 cd $TDK_PATH/
 sh TDKagentMonitor.sh &
-./rdk_tdk_agent_process
+./rdk_tdk_agent_process &
