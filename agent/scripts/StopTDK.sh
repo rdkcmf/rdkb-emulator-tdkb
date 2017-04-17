@@ -19,7 +19,7 @@
 #
 
 echo "Stopping TDK Agent.."
-export TDK_PATH=/opt/TDK
+export TDK_PATH=/usr/ccsp/tdk
 
 sleep 1
 

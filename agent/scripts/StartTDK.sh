@@ -1,4 +1,3 @@
-#!/bin/bash
 ##########################################################################
 # If not stated otherwise in this file or this component's Licenses.txt
 # file the following copyright and licenses apply:
@@ -19,15 +18,30 @@
 ##########################################################################
 #
 
+#!/bin/bash
+
 #Setting up environment to run TDK
-export TDK_PATH=/opt/TDK/
-export PATH=$PATH:/usr/local/bin:$TDK_PATH
+export TDK_PATH=/usr/ccsp/tdk/
+export TDK_BIN_PATH=/usr/bin/
+export TDK_LOGGER_PATH=/nvram/
+export TDK_PROPERTIES_PATH=/etc/
+export PATH=$PATH:/usr/local/bin:$TDK_BIN_PATH
 export TDK_LIB_PATH=$TDK_PATH/libs/
-export LD_LIBRARY_PATH=$TDK_PATH/libs/:/usr/local/lib/:/usr/local/Qt/lib/:/mnt/nfs/lib:/mnt/nfs/bin/target-snmp/lib/:/mnt/nfs/bin:/usr/local/lib/sa:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$TDK_LOGGER_PATH/libs/:$TDK_PATH/libs/:/usr/local/lib/:/usr/local/Qt/lib/:/mnt/nfs/lib:/mnt/nfs/bin/target-snmp/lib/:/mnt/nfs/bin:/usr/local/lib/sa:$LD_LIBRARY_PATH
 
 export PATH HOME LD_LIBRARY_PATH
 ulimit -c unlimited
+sleep 3m
 echo "Going to start Agent"
-cd $TDK_PATH/
-sh TDKagentMonitor.sh &
+cd $TDK_BIN_PATH/
 ./rdk_tdk_agent_process &
+sleep 5
+status=`ps -ef | grep tdk_agent | grep -v grep`
+if [  "$status" ];
+then
+    echo "Starting Agent Monitor Process.."
+    sleep 5
+    cd $TDK_PATH/
+    sh TDKagentMonitor.sh & 
+fi
+
