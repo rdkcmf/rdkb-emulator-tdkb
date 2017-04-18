@@ -31,7 +31,6 @@ export LD_LIBRARY_PATH=$TDK_LOGGER_PATH/libs/:$TDK_PATH/libs/:/usr/local/lib/:/u
 
 export PATH HOME LD_LIBRARY_PATH
 ulimit -c unlimited
-sleep 3m
 echo "Going to start Agent"
 cd $TDK_BIN_PATH/
 ./rdk_tdk_agent_process &
