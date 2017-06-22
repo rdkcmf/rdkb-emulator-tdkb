@@ -23,7 +23,7 @@ export LOG_PATH=/rdklogs/logs/
 
 cp /etc/log4crc $LOG4C_RCPATH
 
-CONTENT='<appender name="RI_TESTrollingfileappender" type="rollingfile" logdir="/rdklogs/logs/" prefix="TESTLog.txt" layout="comcast_dated" rollingpolicy="TEST_rollingpolicy"/>\n<category name="RI.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>\n<category name="RI.Stack.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>\n<category name="RI.Stack.LOG.RDK.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>'
+CONTENT='<rollingpolicy name="TEST_rollingpolicy" type="sizewin" maxsize="2097152" maxnum="2"/>\n<appender name="RI_TESTrollingfileappender" type="rollingfile" logdir="/rdklogs/logs/" prefix="TESTLog.txt" layout="comcast_dated" rollingpolicy="TEST_rollingpolicy"/>\n<category name="RI.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>\n<category name="RI.Stack.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>\n<category name="RI.Stack.LOG.RDK.TEST" priority="debug" appender="RI_TESTrollingfileappender"/>'
 
 C=$(echo $CONTENT | sed 's/\//\\\//g' | sed 's/\"/\\\"/g')
 sed -i "/<\/log4c>/ s/.*/${C}\n&/" $LOG4C_RCPATH/log4crc
