@@ -20,6 +20,8 @@
 
 #!/bin/bash
 
+CMINTERFACE="eth0"
+
 # Check whether the process is running
 checkProcess()
 {
@@ -32,6 +34,16 @@ killProcess()
    kill -9 `ps -ef | grep $processName | grep -v grep |grep -v killProcess | awk '{ print $2}'`
 }
 
+# Get the CM IP Address of the device
+getCMIPAddress()
+{
+    address=`ifconfig -a $CMINTERFACE | grep inet6 | tr -s " " | grep -v Link | cut -d " " -f4 | cut -d "/" -f1`
+    if [ ! "$address" ]; then
+       address=`ifconfig -a $CMINTERFACE | grep inet | grep -v inet6 | tr -s " " | cut -d ":" -f2 | cut -d " " -f1`
+    fi
+    echo $address
+}
+
 # Store the arguments to a variable
 event=$1
 processName=$2
@@ -42,5 +54,7 @@ case $event in
         checkProcess;;
    "killProcess")
         killProcess;;
+   "getCMIPAddress")
+        getCMIPAddress;;
    *) echo "Invalid Argument passed";;
 esac
