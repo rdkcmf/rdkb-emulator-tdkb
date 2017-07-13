@@ -28,7 +28,7 @@ do
    if [ ! "$status" ];
    then
        echo "TDK agent monitor crashed.. Box going for Reboot.."
-       echo $(date) >> $TDK_PATH/monitorcrash.log
+       echo $(date) >> $TDK_LOGGER_PATH/monitorcrash.log
        sleep 10 && reboot
    fi
    sleep 5
