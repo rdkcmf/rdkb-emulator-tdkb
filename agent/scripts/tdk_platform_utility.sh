@@ -44,6 +44,13 @@ getCMIPAddress()
     echo $address
 }
 
+#get the MAC address of the device
+getCMMACAddress()
+{
+    macaddress=`ifconfig eth0 | grep HWaddr | awk '{ print $5 }'`
+    echo $macaddress
+}
+
 # Store the arguments to a variable
 event=$1
 processName=$2
@@ -56,5 +63,7 @@ case $event in
         killProcess;;
    "getCMIPAddress")
         getCMIPAddress;;
+   "getCMMACAddress")
+        getCMMACAddress;;
    *) echo "Invalid Argument passed";;
 esac
