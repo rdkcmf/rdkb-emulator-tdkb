@@ -1,3 +1,4 @@
+#!/bin/bash
 ##########################################################################
 # If not stated otherwise in this file or this component's Licenses.txt
 # file the following copyright and licenses apply:
@@ -16,21 +17,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ##########################################################################
-#
-
 loop=1
 sleep 60
-
 # To monitor TDK Agent process and reboot box on its crash
 while [ $loop -eq 1 ]
 do
    status=`ps -ef | grep tdk_agent_monitor | grep -v grep`
-   if [ ! "$status" ];
+   agentPort=`netstat -tupln | grep "8087" | awk {'print$7'}`
+   devicePort=`netstat -tupln | grep "8088" | awk {'print$7'}`
+   if [[ ! "$status" ]] || [[ $agentPort != *"tdk_agent"* ]] || [[ $devicePort != *"tdk_agent"* ]]
    then
-       echo "TDK agent monitor crashed.. Box going for Reboot.."
+       echo "TDK agent monitor crashed or TDK agent not listening on port 8087/8088.. Box going for Reboot.."
        echo $(date) >> $TDK_LOGGER_PATH/monitorcrash.log
        sleep 10 && reboot
    fi
    sleep 5
-
 done
