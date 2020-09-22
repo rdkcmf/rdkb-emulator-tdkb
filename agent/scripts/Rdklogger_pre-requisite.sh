@@ -20,6 +20,7 @@
 
 export LOG4C_RCPATH=/nvram/
 export LOG_PATH=/rdklogs/logs/
+export TDK_LOGGER_PATH=/nvram/TDK/
 
 cp /etc/log4crc $LOG4C_RCPATH
 
@@ -27,3 +28,7 @@ CONTENT='<rollingpolicy name="TEST_rollingpolicy" type="sizewin" maxsize="209715
 
 C=$(echo $CONTENT | sed 's/\//\\\//g' | sed 's/\"/\\\"/g')
 sed -i "/<\/log4c>/ s/.*/${C}\n&/" $LOG4C_RCPATH/log4crc
+
+echo "create TDK folder under /nvram for TDK logging"
+mkdir $TDK_LOGGER_PATH
+

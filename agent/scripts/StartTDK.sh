@@ -21,7 +21,7 @@
 #Setting up environment to run TDK
 export TDK_PATH=/usr/ccsp/tdk/
 export TDK_BIN_PATH=/usr/bin/
-export TDK_LOGGER_PATH=/nvram/
+export TDK_LOGGER_PATH=/nvram/TDK/
 export TDK_PROPERTIES_PATH=/etc/
 export PATH=$PATH:/usr/local/bin:$TDK_BIN_PATH
 export TDK_LIB_PATH=$TDK_PATH/libs/
@@ -41,6 +41,6 @@ then
     echo "Starting Agent Monitor Process.."
     sleep 5
     cd $TDK_PATH/
-    sh TDKagentMonitor.sh & 
+    sh TDKagentMonitor.sh
 fi
 

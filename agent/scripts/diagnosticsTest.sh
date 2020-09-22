@@ -20,21 +20,24 @@
 ##########################################################################
 #
 
+export TDK_LOGGER_PATH=/nvram/TDK/
+
 source /etc/tdk_platform.properties
 
-echo "UPTIME:" >> /nvram/device_diagnostics.log
-echo "--------" >> /nvram/device_diagnostics.log
-uptime >> /nvram/device_diagnostics.log
+echo "UPTIME:" >> $TDK_LOGGER_PATH/device_diagnostics.log
+echo "--------" >> $TDK_LOGGER_PATH/device_diagnostics.log
+uptime >> $TDK_LOGGER_PATH/device_diagnostics.log
 
-echo -e "\nCCSP PROCESSESS RUNNING:" >> /nvram/device_diagnostics.log
-echo "----------------------" >> /nvram/device_diagnostics.log
+echo -e "\nCCSP PROCESSESS RUNNING:" >> $TDK_LOGGER_PATH/device_diagnostics.log
+echo "----------------------" >> $TDK_LOGGER_PATH/device_diagnostics.log
 
 for process in $(echo $CCSP_PROCESS | sed "s/,/ /g")
 do
     OUTPUT=$(top -b -n1 | grep $process | grep -v "grep")
     if [ $? -eq 0 ]; then
-        echo $OUTPUT >> /nvram/device_diagnostics.log
+        echo $OUTPUT >> $TDK_LOGGER_PATH/device_diagnostics.log
     else
-        echo "$process is not running" >> /nvram/device_diagnostics.log
+        echo "$process is not running" >> $TDK_LOGGER_PATH/device_diagnostics.log
     fi
 done
+

@@ -19,6 +19,18 @@
 ##########################################################################
 loop=1
 sleep 60
+
+export TDK_LOGGER_PATH=/nvram/TDK/
+
+if [ -f $TDK_LOGGER_PATH/monitorcrash.log ]; then
+
+        l=`wc -l < $TDK_LOGGER_PATH/monitorcrash.log`
+
+        if [ "$l" -gt 30 ];then
+                sed -i '1d' $TDK_LOGGER_PATH/monitorcrash.log
+        fi
+fi
+
 # To monitor TDK Agent process and reboot box on its crash
 while [ $loop -eq 1 ]
 do
