@@ -19,9 +19,7 @@
 # limitations under the License.
 ##########################################################################
 #
-
 export TDK_LOGGER_PATH=/nvram/TDK/
-
 source /etc/tdk_platform.properties
 
 echo "UPTIME:" >> $TDK_LOGGER_PATH/device_diagnostics.log
@@ -40,4 +38,51 @@ do
         echo "$process is not running" >> $TDK_LOGGER_PATH/device_diagnostics.log
     fi
 done
+
+echo "----------------------" >> $TDK_LOGGER_PATH/device_diagnostics.log
+echo -e "\n The following processes have two instances:" >> $TDK_LOGGER_PATH/device_diagnostics.log
+
+for process in $(echo $CCSP_PROCESS | sed "s/,/ /g")
+do
+    OUTPUT=$(ps  | grep  $process | grep -v "grep"| wc -l)
+    if [ $OUTPUT -gt 1 ]; then
+        echo $process >> $TDK_LOGGER_PATH/device_diagnostics.log
+    fi
+done
+
+echo "----------------------" >> $TDK_LOGGER_PATH/device_diagnostics.log
+echo -e "\n The following processes are not up:" >> $TDK_LOGGER_PATH/device_diagnostics.log
+
+for process in $(echo $CCSP_PROCESS | sed "s/,/ /g")
+do
+
+    OUTPUT=$(pidof $process)
+    if [ $OUTPUT -eq " " ]; then
+        echo $process >> $TDK_LOGGER_PATH/device_diagnostics.log
+    fi
+done
+
+echo "----------------------" >> $TDK_LOGGER_PATH/device_diagnostics.log
+echo -e "\n The following processes were restarted :" >> $TDK_LOGGER_PATH/device_diagnostics.log
+
+echo $(grep -rin "restart" /rdklogs/logs/)
+
+echo "----------------------" >> $TDK_LOGGER_PATH/device_diagnostics.log
+echo -e "\n Checking if the device is in router mode :" >> $TDK_LOGGER_PATH/device_diagnostics.log
+OUTPUT=$(dmcli simu getv Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode | grep "value" | cut -f3 -d":" | cut -f2 -d" ")
+
+echo "The device is in $OUTPUT mode ">> $TDK_LOGGER_PATH/device_diagnostics.log
+
+if [ "$OUTPUT" != "router" ] ; then
+   OUTPUT=$(dmcli simu setv Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode string "router" | grep "value" | cut -f3 -d":" | cut -f2 -d" ")
+
+   sleep 90
+   OUTPUT=$(dmcli simu getv Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode | grep "value" | cut -f3 -d":" | cut -f2 -d" ")
+   if [ "$OUTPUT" = "router" ]; then
+      echo "DUT set to router mode successfully">> $TDK_LOGGER_PATH/device_diagnostics.log
+   else
+       echo "Failed to set DUT to router mode successfully">> $TDK_LOGGER_PATH/device_diagnostics.log
+   fi
+fi
+
 
